@@ -112,6 +112,9 @@ class LanguageModel(nn.Module):
 
         # initialize the weights
         self.init_weights()
+
+        # weight tying
+        self.embedding.weight = self.scoring.weight
     
     def init_weights(self):
         self.embedding.weight.data.uniform_(-0.1, 0.1)
