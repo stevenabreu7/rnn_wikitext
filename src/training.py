@@ -379,14 +379,16 @@ plt.plot(range(1, trainer.epochs + 1), trainer.train_losses, label='Training los
 plt.xlabel('Epochs')
 plt.ylabel('Loss')
 plt.legend()
-plt.show()
+path = os.path.join('experiments', run_id, 'tr_loss')
+plt.savefig(path)
 
 plt.figure()
 plt.plot(range(1, trainer.epochs + 1), trainer.val_losses, label='Validation NLL')
 plt.xlabel('Epochs')
 plt.ylabel('NLL')
 plt.legend()
-plt.show()
+path = os.path.join('experiments', run_id, 'val_nll')
+plt.savefig(path)
 
 # see generated output
 print(trainer.generated[-1])
