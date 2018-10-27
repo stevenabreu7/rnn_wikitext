@@ -1,7 +1,7 @@
 # data parameters
 vocab_size = 33278
-embed_size = 500
-hidden_size = 10
+embed_size = 100
+hidden_size = 100
 n_layers = 3
 seq_length = 50
 
