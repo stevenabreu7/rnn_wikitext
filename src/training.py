@@ -232,7 +232,7 @@ class LanguageModelTrainer:
         self.train_losses.append(epoch_loss)
         # logging
         self.epochs += 1
-        print('[TRAIN] Epoch {:03}/{:03} Loss {:7.4f} Perpl {:7.4f}'.format(
+        print('\r[TRAIN] Epoch {:03}/{:03} Loss {:7.4f} Perpl {:7.4f}'.format(
             self.epochs, self.max_epochs, epoch_loss, np.exp(epoch_loss)
         ))
 
