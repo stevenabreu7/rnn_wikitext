@@ -76,7 +76,7 @@ class FixedSequenceDataset(Dataset):
 
 class LanguageModel(nn.Module):
     def __init__(self, vocab_size, embed_size, hidden_size, n_layers, dropout_input=0.5, dropout_hidden=0.5, 
-                dropout_embed=0.1, dropout_final=0.4, weight_drop=0.1, tie_weights=False):
+                dropout_embed=0.1, dropout_final=0.4, weight_drop=0.1, tie_weights=True):
         """Language model.
         Consists of:
         - an embedding layer
@@ -114,7 +114,8 @@ class LanguageModel(nn.Module):
         self.init_weights()
 
         # weight tying
-        self.embedding.weight = self.scoring.weight
+        if tie_weights:
+            self.embedding.weight = self.scoring.weight
     
     def init_weights(self):
         self.embedding.weight.data.uniform_(-0.1, 0.1)
