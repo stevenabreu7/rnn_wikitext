@@ -137,7 +137,6 @@ class LanguageModel(nn.Module):
         
         # input of size L x B
         batch_size = seq_batch.size(1)
-        seq_batch = self.inp_dropout(seq_batch)
         # embedding and dropout
         embed = self.embedding(seq_batch)
         embed = self.emb_dropout(embed)
