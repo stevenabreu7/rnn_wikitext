@@ -220,7 +220,7 @@ class LanguageModelTrainer:
         
         # optimizer and criterion for this trainer
         # self.optimizer = torch.optim.ASGD(model.parameters(), lr=1e-2, weight_decay=1e-3, t0=1e6)
-        self.optimizer = torch.optim.Adam(model.parameters(), lr=1e-2, weight_decay=1e-3)
+        self.optimizer = torch.optim.Adam(model.parameters(), lr=1e-4, weight_decay=1e-3)
         self.criterion = nn.CrossEntropyLoss()
 
     def train(self):
