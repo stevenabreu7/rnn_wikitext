@@ -370,7 +370,7 @@ for epoch in range(cg.n_epochs):
     # save model whenever we improve NLL
     if nll < best_nll:
         best_nll = nll
-        print("\nSaving data for epoch {:} with NLL {:}".format(epoch, best_nll))
+        print("\rSaving data for epoch {:} with NLL {:}".format(epoch, best_nll))
         trainer.save()
 
 # plot training curves
