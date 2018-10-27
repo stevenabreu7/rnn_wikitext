@@ -295,9 +295,9 @@ class LanguageModelTrainer:
         np.save(os.path.join('experiments', self.run_id, 'generated_logits-{}.npy'.format(self.epochs)), self.generated_logits[-1])
         np.save(os.path.join('experiments', self.run_id, 'generated_logits-test-{}.npy'.format(self.epochs)), self.generated_logits_test[-1])
         with open(os.path.join('experiments', self.run_id, 'generated-{}.txt'.format(self.epochs)), 'w') as fw:
-            fw.write(self.generated[-1])
+            fw.write(self.generated[-1].encode('utf-8'))
         with open(os.path.join('experiments', self.run_id, 'generated-test-{}.txt'.format(self.epochs)), 'w') as fw:
-            fw.write(self.generated_test[-1])
+            fw.write(self.generated_test[-1].encode('utf-8'))
         with open(os.path.join('experiments', self.run_id, 'train_losses.txt'), 'w') as fw:
             for tloss in self.train_losses:
                 fw.write(str(tloss))
