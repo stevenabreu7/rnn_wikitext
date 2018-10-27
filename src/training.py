@@ -4,7 +4,6 @@ import torch
 import random
 import numpy as np
 import torch.nn as nn
-import torchnlp.nn as nlp_nn
 import matplotlib.pyplot as plt
 from torch.autograd import Variable
 from torch.utils.data import Dataset, DataLoader
@@ -76,7 +75,8 @@ class FixedSequenceDataset(Dataset):
         return self.data.size(0)
 
 class LanguageModel(nn.Module):
-    def __init__(self, vocab_size, embed_size, hidden_size, n_layers):
+    def __init__(self, vocab_size, embed_size, hidden_size, n_layers, dropout_input=0.5, dropout_hidden=0.5, 
+                dropout_embed=0.1, dropout_final=0.4, weight_drop=0.1, tie_weights=False):
         """Language model.
         Consists of:
         - an embedding layer
@@ -87,18 +87,36 @@ class LanguageModel(nn.Module):
         - TODO: dropout on word vectors of 0.4
         """
         super(LanguageModel, self).__init__()
+
+        # save parameters
         self.n_layers = n_layers
         self.vocab_size = vocab_size
         self.embed_size = embed_size
         self.hidden_size = hidden_size
+        self.weight_drop = weight_drop
+        self.tie_weights = tie_weights
+        self.dropout_input = dropout_input
+        self.dropout_embed = dropout_embed
+        self.dropout_hidden = dropout_hidden
+        self.dropout_final = dropout_final
+
         self.embedding = nn.Embedding(vocab_size, embed_size)
-        self.emb_dropout = nn.Dropout(0.1)
-        self.recurrent = nlp_nn.WeightDropLSTM(input_size=embed_size, hidden_size=hidden_size, num_layers=n_layers, weight_dropout=0.5)
+        self.recurrent = nn.LSTM(input_size=embed_size, hidden_size=hidden_size, num_layers=n_layers, dropout=dropout_hidden)
+        self.scoring = nn.Linear(hidden_size, vocab_size)
         # alternative to nlp_nn.WeightDropLSTM: LSTM + WeightDrop
         #self.recurrent = nn.LSTM(input_size=embed_size, hidden_size=hidden_size, num_layers=n_layers)
         #self.drop_connect = nlp_nn.WeightDrop(self.recurrent, ['weight_hh'], dropout=0.9)
-        self.final_dropout = nn.Dropout(0.4)
-        self.scoring = nn.Linear(hidden_size, vocab_size)
+        self.inp_dropout = nn.Dropout(dropout_input)
+        self.emb_dropout = nn.Dropout(dropout_embed)
+        self.final_dropout = nn.Dropout(dropout_final)
+
+        # initialize the weights
+        self.init_weights()
+    
+    def init_weights(self):
+        self.embedding.weight.data.uniform_(-0.1, 0.1)
+        self.scoring.bias.data.fill_(0)
+        self.scoring.weight.data.uniform_(-0.1, 0.1)
 
     def forward(self, seq_batch):
         """Forward pass in the model.
