@@ -315,6 +315,9 @@ class TestLanguageModel:
         # transpose from B x L to L x B
         inp = inp.transpose()
         inp = torch.Tensor(inp).type(torch.LongTensor)
+        if torch.cuda.is_available():
+            model = model.cuda()
+            inp = inp.cuda()
         output = model.forward(inp)
         # output is L x B x V, turn into B x V
         # by taking the last element (next word)
@@ -332,6 +335,9 @@ class TestLanguageModel:
         """
         inp = inp.T
         inp = torch.Tensor(inp).type(torch.LongTensor)
+        if torch.cuda.is_available():
+            model = model.cuda()
+            inp = inp.cuda()
         generated_words = model.generate(inp, forward)
         return generated_words
 
