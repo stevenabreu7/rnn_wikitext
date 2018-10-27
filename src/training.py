@@ -209,9 +209,10 @@ class LanguageModelTrainer:
         self.epochs = 0
         self.max_epochs = max_epochs
         self.run_id = run_id
-        self.device = 'cuda' if torch.cuda.is_available() else 'cpu'
+        self.cuda = torch.cuda.is_available()
         
-        self.model = self.model.to(self.device)
+        if self.cuda:
+            self.model = self.model.cuda()
         
         # optimizer and criterion for this trainer
         # self.optimizer = torch.optim.ASGD(model.parameters(), lr=1e-2, weight_decay=1e-3, t0=1e6)
@@ -236,8 +237,8 @@ class LanguageModelTrainer:
         ))
 
     def train_batch(self, inputs, targets):
-        inputs = inputs.to(self.device)
-        targets = targets.to(self.device)
+        inputs = inputs.cuda()
+        targets = targets.cuda()
         outputs = self.model(inputs)
         # flatten the output and target for the loss function
         outputs = outputs.view(-1, outputs.size(2))
