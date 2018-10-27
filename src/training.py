@@ -237,12 +237,14 @@ class LanguageModelTrainer:
         ))
 
     def train_batch(self, inputs, targets):
-        inputs = inputs.cuda()
-        targets = targets.cuda()
+        if self.cuda:
+            inputs = inputs.cuda()
         outputs = self.model(inputs)
         # flatten the output and target for the loss function
         outputs = outputs.view(-1, outputs.size(2))
         targets = targets.view(-1).type(torch.LongTensor)
+        if self.cuda:
+            targets = targets.cuda()
         # loss of the flattened outputs
         loss = self.criterion(outputs, targets)
         # backward pass
