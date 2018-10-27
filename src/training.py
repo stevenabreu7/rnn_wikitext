@@ -149,8 +149,6 @@ class LanguageModel(nn.Module):
         output_lstm_flatten = output_lstm.view(-1, self.hidden_size)
         # full linear layer for scoring - to (L*B) * V
         output_scoring = self.scoring(output_lstm_flatten)
-        # TODO: gumbel
-        output_scoring += torch.Tensor(np.random.gumbel(0,1,output_scoring.shape))
         # return as L x B x V
         return output_scoring.view(-1,batch_size,self.vocab_size)
     
