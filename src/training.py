@@ -355,7 +355,7 @@ print("Saving models, predictions, and generated words to ./experiments/%s" % ru
 import config as cg
 
 # language model
-model = LanguageModel(cg.vocab_size, cg.embed_size, cg.hidden_size, cg.n_layers)
+model = LanguageModel(cg.vocab_size, cg.embed_size, cg.hidden_size, cg.n_layers, tie_weights=cg.tie_weights)
 
 # dataset and data loader
 dataset = FixedSequenceDataset(data, cg.seq_length)
