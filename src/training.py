@@ -234,7 +234,7 @@ class LanguageModelTrainer:
         self.epochs += 1
         print('\r[TRAIN] Epoch {:03}/{:03} Loss {:7.4f} Perpl {:7.4f}'.format(
             self.epochs, self.max_epochs, epoch_loss, np.exp(epoch_loss)
-        ))
+        ), end='\t')
 
     def train_batch(self, inputs, targets):
         if self.cuda:
@@ -281,7 +281,7 @@ class LanguageModelTrainer:
         self.predictions_test.append(predictions_test)
 
         # logging
-        print('\r[VAL]   Epoch {:03}/{:03} NLL {:7.4f}'.format(
+        print('[VAL] Epoch {:03}/{:03} NLL {:7.4f}'.format(
             self.epochs, self.max_epochs, nll
         ))
 
