@@ -283,7 +283,7 @@ class LanguageModelTrainer:
         # logging
         print('\r[VAL]   Epoch {:03}/{:03} NLL {:7.4f}'.format(
             self.epochs, self.max_epochs, nll
-        ), end='')
+        ))
 
         return nll
 
