@@ -352,6 +352,11 @@ if not os.path.exists('./experiments'):
 os.mkdir('./experiments/%s' % run_id)
 print("Saving models, predictions, and generated words to ./experiments/%s" % run_id)
 
+path = input('enter model path: ')
+
+if path:
+    run_id = 'submission'
+
 import config as cg
 
 # language model
@@ -367,8 +372,16 @@ trainer = LanguageModelTrainer(model=model, loader=loader, max_epochs=cg.n_epoch
 # initialize best NLL to large value
 best_nll = 1e30
 
+# load params
+if path:
+    model.load_state_dict(torch.load('experiments/{}'.format(path)))
+
 # train the model
 for epoch in range(cg.n_epochs):
+    if path:
+        trainer.test()
+        trainer.save()
+        break
     trainer.train()
     nll = trainer.test()
     # save model whenever we improve NLL
