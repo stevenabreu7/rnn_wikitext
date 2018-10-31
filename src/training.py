@@ -369,7 +369,7 @@ best_nll = 1e30
 
 # train the model
 for epoch in range(cg.n_epochs):
-    # trainer.train()
+    trainer.train()
     nll = trainer.test()
     # save model whenever we improve NLL
     if nll < best_nll:
