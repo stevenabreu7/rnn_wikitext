@@ -101,21 +101,21 @@ class LanguageModel(nn.Module):
         self.dropout_final = dropout_final
 
         self.embedding = nn.Embedding(vocab_size, embed_size)
-        self.recurrent = nn.LSTM(input_size=embed_size, hidden_size=hidden_size, num_layers=n_layers, dropout=dropout_hidden)
+        self.recurrent = nn.LSTM(input_size=embed_size, hidden_size=hidden_size, num_layers=n_layers)#, dropout=dropout_hidden)
         self.scoring = nn.Linear(hidden_size, vocab_size)
         # alternative to nlp_nn.WeightDropLSTM: LSTM + WeightDrop
-        #self.recurrent = nn.LSTM(input_size=embed_size, hidden_size=hidden_size, num_layers=n_layers)
-        #self.drop_connect = nlp_nn.WeightDrop(self.recurrent, ['weight_hh'], dropout=0.9)
-        self.inp_dropout = nn.Dropout(dropout_input)
-        self.emb_dropout = nn.Dropout(dropout_embed)
-        self.final_dropout = nn.Dropout(dropout_final)
+        # self.recurrent = nn.LSTM(input_size=embed_size, hidden_size=hidden_size, num_layers=n_layers)
+        # self.drop_connect = nlp_nn.WeightDrop(self.recurrent, ['weight_hh'], dropout=0.9)
+        # self.inp_dropout = nn.Dropout(dropout_input)
+        # self.emb_dropout = nn.Dropout(dropout_embed)
+        # self.final_dropout = nn.Dropout(dropout_final)
 
         # initialize the weights
-        self.init_weights()
+        # self.init_weights()
 
         # weight tying
-        if tie_weights:
-            self.embedding.weight = self.scoring.weight
+        # if tie_weights:
+        #     self.embedding.weight = self.scoring.weight
     
     def init_weights(self):
         self.embedding.weight.data.uniform_(-0.1, 0.1)
@@ -139,12 +139,12 @@ class LanguageModel(nn.Module):
         batch_size = seq_batch.size(1)
         # embedding and dropout
         embed = self.embedding(seq_batch)
-        embed = self.emb_dropout(embed)
+        # embed = self.emb_dropout(embed)
         # LSTM - embedded data as L x B x E
         # output of LSTM - L x B x H
         hidden = None
         output_lstm, hidden = self.recurrent(embed, hidden)
-        output_lstm = self.final_dropout(output_lstm)
+        # output_lstm = self.final_dropout(output_lstm)
         # flatten after LSTM to (L*B) x H
         output_lstm_flatten = output_lstm.view(-1, self.hidden_size)
         # full linear layer for scoring - to (L*B) * V
@@ -165,10 +165,10 @@ class LanguageModel(nn.Module):
         # feed it into the network similar to the forward pass
         # but with batch size being 1
         embed = self.embedding(seq)
-        embed = self.emb_dropout(embed)
+        # embed = self.emb_dropout(embed)
         hidden = None
         output_lstm, hidden = self.recurrent(embed, hidden)
-        output_lstm = self.final_dropout(output_lstm)
+        # output_lstm = self.final_dropout(output_lstm)
         # the output is L x 1 x H
         # the last entry of the output is the output 
         # of the network (what we're after) - 1 x H
@@ -182,7 +182,7 @@ class LanguageModel(nn.Module):
         if n_words > 1:
             for i in range(n_words-1):
                 embed = self.embedding(current_word)
-                embed = self.emb_dropout(embed)
+                # embed = self.emb_dropout(embed)
                 # current dimension is 1 x E - turn into 1 x 1 x E
                 embed = embed.unsqueeze(0)
                 # after LSTM: 1 x 1 x H
@@ -220,7 +220,7 @@ class LanguageModelTrainer:
         
         # optimizer and criterion for this trainer
         # self.optimizer = torch.optim.ASGD(model.parameters(), lr=1e-2, weight_decay=1e-3, t0=1e6)
-        self.optimizer = torch.optim.Adam(model.parameters(), lr=1e-4, weight_decay=1e-3)
+        self.optimizer = torch.optim.Adam(model.parameters(), lr=1e-3)
         self.criterion = nn.CrossEntropyLoss()
 
     def train(self):
@@ -369,7 +369,7 @@ best_nll = 1e30
 
 # train the model
 for epoch in range(cg.n_epochs):
-    trainer.train()
+    # trainer.train()
     nll = trainer.test()
     # save model whenever we improve NLL
     if nll < best_nll:
